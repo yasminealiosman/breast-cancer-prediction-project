@@ -1,0 +1,15 @@
+# Ignore Google Drive shortcut files
+*.gdoc
+*.gsheet
+*.gslides
+
+# Ignore Jupyter notebook checkpoints
+.ipynb_checkpoints/
+
+# Ignore Python cache
+__pycache__/
+
+# Ignore large artifacts
+*.pkl
+*.csv
+*.zip
