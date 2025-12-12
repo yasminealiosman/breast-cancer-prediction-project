@@ -18,33 +18,39 @@ This notebook distills our modelling journey into a visual and interpretive dash
 
 import os
 import joblib
+import pandas as pd
 
-def load_test_data():
+def load_test_data(file_type="csv"):
     """
-    Load X_test and y_test from the correct environment path.
-    Works in both Colab and local Windows setups.
+    Load X_test and y_test from repo-relative paths.
+    Works in Streamlit Cloud, Colab, and local setups.
+
+    Parameters
+    ----------
+    file_type : str
+        "csv" (default) if you saved test data as CSVs,
+        "pkl" if you prefer joblib pickles.
+
+    Returns
+    -------
+    X_test, y_test : pandas.DataFrame or numpy array
     """
-    # Detect environment
-    if "COLAB_GPU" in os.environ:  # running in Colab
-        from google.colab import drive
-        drive.mount('/content/drive')
-        base_path = "/content/drive/My Drive/Portfolio/DataSciencePortfolio/Projects/Breast-Cancer/models"
-    else:  # running locally on Windows
-        base_path = r"G:\My Drive\Portfolio\DataSciencePortfolio\Projects\Breast-Cancer\models"
-
-    # Build file paths
-    x_path = os.path.join(base_path, "X_test.pkl")
-    y_path = os.path.join(base_path, "y_test.pkl")
-
-    # Check existence before loading
-    if not os.path.exists(x_path):
-        raise FileNotFoundError(f"X_test.pkl not found at {x_path}")
-    if not os.path.exists(y_path):
-        raise FileNotFoundError(f"y_test.pkl not found at {y_path}")
-
-    # Load with joblib
-    X_test = joblib.load(x_path)
-    y_test = joblib.load(y_path)
+    if file_type == "csv":
+        x_path = os.path.join("dashboard", "X_test.csv")
+        y_path = os.path.join("dashboard", "y_test.csv")
+        if not os.path.exists(x_path) or not os.path.exists(y_path):
+            raise FileNotFoundError("CSV test files not found in dashboard/")
+        X_test = pd.read_csv(x_path)
+        y_test = pd.read_csv(y_path)
+    elif file_type == "pkl":
+        x_path = os.path.join("dashboard", "X_test.pkl")
+        y_path = os.path.join("dashboard", "y_test.pkl")
+        if not os.path.exists(x_path) or not os.path.exists(y_path):
+            raise FileNotFoundError("Pickle test files not found in dashboard/")
+        X_test = joblib.load(x_path)
+        y_test = joblib.load(y_path)
+    else:
+        raise ValueError("file_type must be 'csv' or 'pkl'")
 
     return X_test, y_test
 
@@ -52,12 +58,12 @@ def load_test_data():
 # %%writefile breast_cancer_dashboard.py
 # 
 # # Breast Cancer Prediction Dashboard (Streamlit)
-# 
 # import os
 # import json
 # import joblib
 # import numpy as np
 # import pandas as pd
+# 
 # import matplotlib.pyplot as plt
 # import seaborn as sns
 # import streamlit as st
@@ -80,21 +86,18 @@ def load_test_data():
 # st.caption("This dashboard is for research/decision support, not a substitute for medical diagnosis.")
 # 
 # # -------------------------
-# # Paths
+# # Paths (repo-relative)
 # # -------------------------
-# DRIVE_ROOT = "/content/drive/My Drive/Portfolio/DataSciencePortfolio/Projects/Breast-Cancer"
-# MODELS_DIR = os.path.join(DRIVE_ROOT, "models")
-# DASHBOARD_DIR = os.path.join(DRIVE_ROOT, "dashboard")
+# MODELS_DIR = "models"
+# DASHBOARD_DIR = "dashboard"
 # ARTIFACTS_DIR = os.path.join(DASHBOARD_DIR, "artifacts")
 # EXPORTS_DIR = os.path.join(DASHBOARD_DIR, "exports")
-# os.makedirs(DASHBOARD_DIR, exist_ok=True)
-# os.makedirs(ARTIFACTS_DIR, exist_ok=True)
-# os.makedirs(EXPORTS_DIR, exist_ok=True)
 # 
 # # -------------------------
 # # Utilities
 # # -------------------------
 # def safe_load(path, kind="pickle"):
+#     """Load artifacts safely with Streamlit warnings if missing."""
 #     try:
 #         if kind == "pickle":
 #             return joblib.load(path)
@@ -107,27 +110,19 @@ def load_test_data():
 #         st.warning(f"Missing or unreadable file: {path} ({e})")
 #         return None
 # 
-# def save_fig(fig, filename):
-#     fp = os.path.join(ARTIFACTS_DIR, filename)
-#     fig.savefig(fp, bbox_inches="tight", dpi=150)
-#     return fp
-# 
 # def specificity_score(y_true, y_pred):
 #     cm = confusion_matrix(y_true, y_pred)
-#     tn = cm[0,0]
-#     fp = cm[0,1]
+#     tn, fp = cm[0,0], cm[0,1]
 #     return tn / (tn + fp) if (tn + fp) > 0 else np.nan
 # 
 # def compute_ppv(y_true, y_pred):
 #     cm = confusion_matrix(y_true, y_pred)
-#     tp = cm[1,1]
-#     fp = cm[0,1]
+#     tp, fp = cm[1,1], cm[0,1]
 #     return tp / (tp + fp) if (tp + fp) > 0 else np.nan
 # 
 # def compute_npv(y_true, y_pred):
 #     cm = confusion_matrix(y_true, y_pred)
-#     tn = cm[0,0]
-#     fn = cm[1,0]
+#     tn, fn = cm[0,0], cm[1,0]
 #     return tn / (tn + fn) if (tn + fn) > 0 else np.nan
 # 
 # def compute_brier(y_true, y_prob):
@@ -168,18 +163,21 @@ def load_test_data():
 #         rows.append({"threshold": thr, "net_benefit": net_benefit})
 #     return pd.DataFrame(rows)
 # 
+# 
+# 
+# 
 # # -------------------------
 # # Sidebar configuration
 # # -------------------------
 # st.sidebar.header("Configuration")
 # 
-# # Only LR and GB
+# # Expected models (Logistic Regression and Gradient Boosting)
 # expected_models = {
 #     "LR": ("model_lr.pkl", "threshold_lr.pkl"),
 #     "GB": ("model_gb.pkl", "threshold_gb.pkl"),
 # }
 # 
-# # Paths
+# # Paths (repo-relative defaults, editable in sidebar)
 # eval_csv_path = st.sidebar.text_input(
 #     "Evaluation summary CSV",
 #     os.path.join(DASHBOARD_DIR, "evaluation_summary.csv")
@@ -211,7 +209,7 @@ def load_test_data():
 #         0.0, 1.0, default_thr, 0.01
 #     )
 # 
-# # Interpretability mode (no SHAP)
+# # Interpretability mode
 # interpret_mode = st.sidebar.radio(
 #     "Interpretability mode",
 #     ["Feature Importance", "Calibration"],
@@ -222,22 +220,27 @@ def load_test_data():
 # show_calibration = st.sidebar.checkbox("Show calibration curves", value=True)
 # 
 # # -------------------------
-# # Load data
+# # Load test data
 # # -------------------------
 # X_test = safe_load(x_test_path, kind="csv")
 # y_test = safe_load(y_test_path, kind="csv")
+# 
 # if isinstance(y_test, pd.DataFrame):
 #     y_test = y_test.iloc[:, 0]
 # elif y_test is None:
 #     st.error("Test labels not found. Please provide y_test.csv.")
+# 
 # if X_test is None:
 #     st.error("Test features not found. Please provide X_test.csv.")
+# 
 # if X_test is None or y_test is None:
 #     st.stop()
 # 
 # st.success("✅ Test data loaded")
 # 
-# # Load evaluation summary and filter to LR/GB
+# # -------------------------
+# # Load evaluation summary
+# # -------------------------
 # eval_df = safe_load(eval_csv_path, kind="csv")
 # if isinstance(eval_df, pd.DataFrame) and not eval_df.empty and "Model" in eval_df.columns:
 #     eval_df = eval_df[eval_df["Model"].isin(["LR", "GB"])].copy()
@@ -247,16 +250,18 @@ def load_test_data():
 #     st.sidebar.warning("⚠️ Evaluation summary not found or empty")
 # 
 # # -------------------------
-# # Load models
+# # Load models + thresholds
 # # -------------------------
 # models = {}
 # thresholds = {}
 # load_msgs = []
+# 
 # for key in selected_models:
 #     mfile, tfile = expected_models[key]
 #     model = safe_load(os.path.join(MODELS_DIR, mfile), kind="pickle")
 #     thr_obj = safe_load(os.path.join(MODELS_DIR, tfile), kind="pickle")
-#     thr_val = threshold_controls[key] if key in threshold_controls else (float(thr_obj) if thr_obj is not None else 0.5)
+#     thr_val = threshold_controls.get(key, float(thr_obj) if thr_obj is not None else 0.5)
+# 
 #     if model is not None:
 #         models[key] = model
 #         thresholds[key] = float(thr_val)
@@ -266,6 +271,7 @@ def load_test_data():
 # 
 # st.subheader("Model load status")
 # st.write("\n".join(load_msgs))
+# 
 # if not models:
 #     st.error("No models loaded. Please check your configuration.")
 #     st.stop()
@@ -291,7 +297,12 @@ def load_test_data():
 # with c3:
 #     st.metric(label="Accuracy range", value=acc_range_txt)
 # 
-# st.markdown("**Interpretability note:** LR provides interpretable coefficients (risk factors); GB provides feature importance and is evaluated with calibration curves for probability reliability.")
+# st.markdown(
+#     "**Interpretability note:** LR provides interpretable coefficients (risk factors); "
+#     "GB provides feature importance and is evaluated with calibration curves for probability reliability."
+# )
+# 
+# 
 # 
 # # -------------------------
 # # Model comparison table + bar plot
@@ -300,15 +311,17 @@ def load_test_data():
 # if isinstance(eval_df, pd.DataFrame) and not eval_df.empty:
 #     cols_expected = [c for c in ["Model","Precision","Recall","F1","Specificity","ROC_AUC","Accuracy"] if c in eval_df.columns]
 #     if cols_expected:
-#         st.dataframe(eval_df[cols_expected], width="stretch")
+#         st.dataframe(eval_df[cols_expected], use_container_width=True)
 #         show_cols = [c for c in ["Recall","Specificity","F1","ROC_AUC"] if c in eval_df.columns]
 #         if show_cols:
 #             fig_bar, ax = plt.subplots()
-#             eval_df.set_index("Model")[show_cols].plot(kind="bar", ax=ax, color=["#1f77b4","#2ca02c","#9467bd","#ff7f0e"])
+#             eval_df.set_index("Model")[show_cols].plot(
+#                 kind="bar", ax=ax,
+#                 color=["#1f77b4","#2ca02c","#9467bd","#ff7f0e"]
+#             )
 #             ax.set_title("Balanced metrics comparison (Recall, Specificity, F1, ROC_AUC)")
 #             ax.legend(bbox_to_anchor=(1.02, 1), loc="upper left")
 #             st.pyplot(fig_bar)
-#             save_fig(fig_bar, "comparison_balanced_metrics.png")
 # else:
 #     st.info("No evaluation_summary.csv found. Provide it to view the comparison table and charts.")
 # 
@@ -318,9 +331,10 @@ def load_test_data():
 # st.subheader("ROC curves")
 # roc_curves = {}
 # color_map = {"LR": "#1f77b4", "GB": "#ff7f0e"}
+# 
 # for name, model in models.items():
 #     try:
-#         proba = model.predict_proba(X_test)[:,1]
+#         proba = model.predict_proba(X_test)[:, 1]
 #         auc = roc_auc_score(y_test, proba)
 #         fpr, tpr, _ = roc_curve(y_test, proba)
 #         roc_curves[name] = (fpr, tpr, auc, color_map.get(name, None))
@@ -330,7 +344,6 @@ def load_test_data():
 # if roc_curves:
 #     fig_roc = plot_roc_curves(roc_curves, title="ROC curves by model (AUC in legend)")
 #     st.pyplot(fig_roc)
-#     save_fig(fig_roc, "roc_overlay.png")
 # 
 # # -------------------------
 # # Calibration curves
@@ -353,7 +366,6 @@ def load_test_data():
 #                 ax.legend()
 #                 with cal_cols[idx % len(cal_cols)]:
 #                     st.pyplot(fig_cal)
-#                 save_fig(fig_cal, f"calibration_{name.lower()}.png")
 #         except Exception as e:
 #             st.warning(f"Skipping calibration for {name}: {e}")
 # 
@@ -365,158 +377,99 @@ def load_test_data():
 # for idx, (name, model) in enumerate(models.items()):
 #     thr = thresholds.get(name, 0.5)
 #     try:
-#         proba = model.predict_proba(X_test)[:,1]
+#         proba = model.predict_proba(X_test)[:, 1]
 #         y_pred = (proba >= thr).astype(int)
 #         fig_cm = plot_confusion_matrix(y_test, y_pred, title=f"{name} (thr={thr:.3f})")
 #         with cm_cols[idx % len(cm_cols)]:
 #             st.pyplot(fig_cm)
-#         save_fig(fig_cm, f"cm_{name.lower()}.png")
 #     except Exception as e:
 #         st.warning(f"Skipping CM for {name}: {e}")
 # 
+# 
+# 
 # # -------------------------
-# # Threshold tuning metrics (add PPV, NPV, Brier)
+# # Model comparison table + bar plot
 # # -------------------------
-# st.subheader("Threshold tuning metrics")
-# metrics_rows = []
+# st.subheader("Model comparison")
+# if isinstance(eval_df, pd.DataFrame) and not eval_df.empty:
+#     cols_expected = [c for c in ["Model", "Precision", "Recall", "F1", "Specificity", "ROC_AUC", "Accuracy"] if c in eval_df.columns]
+#     if cols_expected:
+#         st.dataframe(eval_df[cols_expected], use_container_width=True)
+# 
+#         show_cols = [c for c in ["Recall", "Specificity", "F1", "ROC_AUC"] if c in eval_df.columns]
+#         if show_cols:
+#             fig_bar, ax = plt.subplots()
+#             eval_df.set_index("Model")[show_cols].plot(
+#                 kind="bar", ax=ax,
+#                 color=["#1f77b4", "#2ca02c", "#9467bd", "#ff7f0e"]
+#             )
+#             ax.set_title("Balanced metrics comparison (Recall, Specificity, F1, ROC_AUC)")
+#             ax.legend(bbox_to_anchor=(1.02, 1), loc="upper left")
+#             st.pyplot(fig_bar)
+# else:
+#     st.info("No evaluation_summary.csv found. Provide it to view the comparison table and charts.")
+# 
+# # -------------------------
+# # ROC curves overlay
+# # -------------------------
+# st.subheader("ROC curves")
+# roc_curves = {}
+# color_map = {"LR": "#1f77b4", "GB": "#ff7f0e"}
+# 
 # for name, model in models.items():
+#     try:
+#         proba = model.predict_proba(X_test)[:, 1]
+#         auc = roc_auc_score(y_test, proba)
+#         fpr, tpr, _ = roc_curve(y_test, proba)
+#         roc_curves[name] = (fpr, tpr, auc, color_map.get(name, None))
+#     except Exception as e:
+#         st.warning(f"Skipping ROC for {name}: {e}")
+# 
+# if roc_curves:
+#     fig_roc = plot_roc_curves(roc_curves, title="ROC curves by model (AUC in legend)")
+#     st.pyplot(fig_roc)
+# 
+# # -------------------------
+# # Calibration curves
+# # -------------------------
+# if show_calibration:
+#     st.subheader("Calibration curves")
+#     cal_cols = st.columns(min(len(models), 3))
+#     for idx, (name, model) in enumerate(models.items()):
+#         try:
+#             if hasattr(model, "predict_proba"):
+#                 y_prob = model.predict_proba(X_test)[:, 1]
+#                 prob_true, prob_pred = calibration_curve(y_test, y_prob, n_bins=10)
+# 
+#                 fig_cal, ax = plt.subplots()
+#                 ax.plot(prob_pred, prob_true, marker='o', label=name, color=color_map.get(name, None))
+#                 ax.plot([0, 1], [0, 1], "k--", label="Perfectly calibrated")
+#                 ax.set_xlabel("Predicted probability")
+#                 ax.set_ylabel("True probability")
+#                 ax.set_title(f"Calibration Curve - {name}")
+#                 ax.legend()
+#                 with cal_cols[idx % len(cal_cols)]:
+#                     st.pyplot(fig_cal)
+#         except Exception as e:
+#             st.warning(f"Skipping calibration for {name}: {e}")
+# 
+# # -------------------------
+# # Confusion matrices
+# # -------------------------
+# st.subheader("Confusion matrices")
+# cm_cols = st.columns(min(len(models), 4))
+# for idx, (name, model) in enumerate(models.items()):
 #     thr = thresholds.get(name, 0.5)
 #     try:
-#         proba = model.predict_proba(X_test)[:,1]
+#         proba = model.predict_proba(X_test)[:, 1]
 #         y_pred = (proba >= thr).astype(int)
-#         prec = precision_score(y_test, y_pred, zero_division=0)
-#         rec = recall_score(y_test, y_pred, zero_division=0)
-#         f1 = f1_score(y_test, y_pred, zero_division=0)
-#         acc = accuracy_score(y_test, y_pred)
-#         spec = specificity_score(y_test, y_pred)
-#         auc = roc_auc_score(y_test, proba)
-#         ppv = compute_ppv(y_test, y_pred)
-#         npv = compute_npv(y_test, y_pred)
-#         brier = compute_brier(y_test, proba)
-#         metrics_rows.append({
-#             "Model": name, "Threshold": thr,
-#             "Precision": round(prec,3), "Recall": round(rec,3),
-#             "F1": round(f1,3), "Specificity": round(spec,3),
-#             "Accuracy": round(acc,3), "ROC_AUC": round(auc,3),
-#             "PPV": round(ppv,3), "NPV": round(npv,3),
-#             "Brier": round(brier,3)
-#         })
+#         fig_cm = plot_confusion_matrix(y_test, y_pred, title=f"{name} (thr={thr:.3f})")
+#         with cm_cols[idx % len(cm_cols)]:
+#             st.pyplot(fig_cm)
 #     except Exception as e:
-#         st.warning(f"Skipping metrics for {name}: {e}")
+#         st.warning(f"Skipping CM for {name}: {e}")
 # 
-# if metrics_rows:
-#     metrics_df = pd.DataFrame(metrics_rows)
-#     st.dataframe(metrics_df, width="stretch")
-#     metrics_df.to_csv(os.path.join(ARTIFACTS_DIR, "threshold_tuning_metrics.csv"), index=False)
 # 
-# # -------------------------
-# # Interpretability (LR coefficients, GB feature importance)
-# # -------------------------
-# st.header("Interpretability")
-# 
-# # LR coefficients from pipeline final step
-# if "LR" in models:
-#     try:
-#         lr = models["LR"]
-#         # Extract final estimator from pipeline if needed
-#         final_lr = lr
-#         if hasattr(lr, "named_steps"):
-#             final_lr = lr.named_steps.get("clf", lr)
-#         if hasattr(final_lr, "coef_"):
-#             coef = final_lr.coef_.ravel()
-#             feat_names = list(X_test.columns)[:len(coef)]
-#             lr_df = pd.DataFrame({"Feature": feat_names, "Coefficient": coef})
-#             lr_df["Impact"] = np.where(lr_df["Coefficient"] >= 0, "Positive", "Negative")
-#             lr_df = lr_df.sort_values("Coefficient", ascending=False)
-# 
-#             st.markdown("**Logistic Regression coefficients (risk factors):**")
-#             st.dataframe(lr_df, width="stretch")
-# 
-#             fig_lr, ax = plt.subplots(figsize=(7,5))
-#             sns.barplot(data=lr_df, x="Coefficient", y="Feature", hue="Impact", dodge=False, ax=ax, palette={"Positive":"crimson","Negative":"steelblue"})
-#             ax.set_title("LR feature impacts (Positive = higher malignancy risk)")
-#             st.pyplot(fig_lr)
-#             save_fig(fig_lr, "lr_coefficients.png")
-#         else:
-#             st.info("LR coefficients not accessible on the loaded object.")
-#     except Exception as e:
-#         st.warning(f"LR interpretability error: {e}")
-# 
-# # GB feature importance from pipeline final step
-# if "GB" in models:
-#     try:
-#         gb = models["GB"]
-#         final_gb = gb
-#         if hasattr(gb, "named_steps"):
-#             final_gb = gb.named_steps.get("clf", gb)
-#         if hasattr(final_gb, "feature_importances_"):
-#             importances = final_gb.feature_importances_
-#             feats = list(X_test.columns)[:len(importances)]
-#             fi_df = pd.DataFrame({"Feature": feats, "Importance": importances}).sort_values("Importance", ascending=False)
-# 
-#             st.markdown("**Gradient Boosting feature importance:**")
-#             st.dataframe(fi_df.head(20), width="stretch")
-# 
-#             fig_fi, ax = plt.subplots(figsize=(7,5))
-#             sns.barplot(data=fi_df.head(15), x="Importance", y="Feature", ax=ax, color="#ff7f0e")
-#             ax.set_title("GB feature importance (top 15)")
-#             st.pyplot(fig_fi)
-#             save_fig(fig_fi, "gb_feature_importance.png")
-#         else:
-#             st.info("GB feature importances not accessible on the loaded object.")
-#     except Exception as e:
-#         st.warning(f"GB interpretability error: {e}")
-# 
-# # -------------------------
-# # Deployment / reuse (export + batch scoring)
-# # -------------------------
-# st.subheader("Deployment / reuse")
-# 
-# # Export selected model + threshold to Drive
-# model_to_export = st.selectbox("Select model to export", options=list(models.keys()))
-# if st.button("Export model + threshold bundle"):
-#     bundle = {
-#         "model_path": os.path.join(MODELS_DIR, expected_models[model_to_export][0]),
-#         "model_type": type(models[model_to_export]).__name__,
-#         "threshold": thresholds.get(model_to_export, 0.5),
-#         "features": list(X_test.columns)
-#     }
-#     export_fp = os.path.join(EXPORTS_DIR, f"{model_to_export.lower()}_bundle.json")
-#     with open(export_fp, "w") as f:
-#         json.dump(bundle, f, indent=2)
-#     st.success(f"Exported bundle: {export_fp}")
-# 
-# # Batch scoring interface (upload CSV and score)
-# st.markdown("**Batch scoring:** Upload a CSV of new patient data to get predictions.")
-# uploaded = st.file_uploader("Upload CSV for scoring", type=["csv"])
-# if uploaded is not None:
-#     try:
-#         new_df = pd.read_csv(uploaded)
-#         # Align columns with training/test features
-#         missing_cols = set(X_test.columns) - set(new_df.columns)
-#         if missing_cols:
-#             st.warning(f"Uploaded data missing columns: {missing_cols}")
-#             for col in missing_cols:
-#                 new_df[col] = 0.0
-#         new_df = new_df[X_test.columns]  # enforce column order
-# 
-#         pick_model = st.selectbox("Model for batch scoring", options=list(models.keys()), key="batch_model")
-#         thr = thresholds.get(pick_model, 0.5)
-#         mdl = models[pick_model]
-#         proba = mdl.predict_proba(new_df)[:,1]
-#         pred = (proba >= thr).astype(int)
-# 
-#         out = new_df.copy()
-#         out["probability"] = proba
-#         out["prediction"] = pred
-#         st.dataframe(out.head(30), width="stretch")
-# 
-#         # Save batch results
-#         out_fp = os.path.join(ARTIFACTS_DIR, f"batch_{pick_model.lower()}_results.csv")
-#         out.to_csv(out_fp, index=False)
-#         st.success(f"Saved batch results: {out_fp}")
-#     except Exception as e:
-#         st.error(f"Batch scoring failed: {e}")
 # 
 # # -------------------------
 # # Interactive prediction (single case) with clinical reliability metrics
@@ -539,11 +492,11 @@ def load_test_data():
 #         df_in = pd.DataFrame([inputs])
 #         model = models[model_choice]
 #         thr = thresholds.get(model_choice, 0.5)
-#         proba = model.predict_proba(df_in)[:,1][0]
+#         proba = model.predict_proba(df_in)[:, 1][0]
 #         pred = int(proba >= thr)
 # 
 #         # Reliability metrics from test set
-#         y_prob_test = model.predict_proba(X_test)[:,1]
+#         y_prob_test = model.predict_proba(X_test)[:, 1]
 #         y_pred_test = (y_prob_test >= thr).astype(int)
 #         ppv = compute_ppv(y_test, y_pred_test)
 #         npv = compute_npv(y_test, y_pred_test)
@@ -555,21 +508,22 @@ def load_test_data():
 #         st.error(f"Prediction failed: {e}")
 # 
 # # -------------------------
-# # Decision Curve Analysis (distinct colors + CSV export)
+# # Decision Curve Analysis
 # # -------------------------
 # st.header("Decision Curve Analysis")
 # 
 # dca_colors = {"LR": "#1f77b4", "GB": "#ff7f0e"}
-# 
 # dca_frames = []
 # fig_dca, ax = plt.subplots()
+# 
 # for name, model in models.items():
 #     try:
-#         y_prob = model.predict_proba(X_test)[:,1]
+#         y_prob = model.predict_proba(X_test)[:, 1]
 #         dca_df = decision_curve(y_test, y_prob)
 #         dca_df["Model"] = name
 #         dca_frames.append(dca_df)
-#         ax.plot(dca_df["threshold"], dca_df["net_benefit"], label=name, color=dca_colors.get(name, None), linewidth=2)
+#         ax.plot(dca_df["threshold"], dca_df["net_benefit"], label=name,
+#                 color=dca_colors.get(name, None), linewidth=2)
 #     except Exception as e:
 #         st.warning(f"Skipping DCA for {name}: {e}")
 # 
@@ -586,42 +540,31 @@ def load_test_data():
 # ax.set_title("Decision Curve Analysis")
 # ax.legend(loc="best")
 # st.pyplot(fig_dca)
-# save_fig(fig_dca, "decision_curve.png")
 # 
-# # Export DCA CSV (combined)
+# # -------------------------
+# # Export DCA results
+# # -------------------------
 # if dca_frames:
 #     dca_all = pd.concat(dca_frames, ignore_index=True)
-#     dca_fp = os.path.join(ARTIFACTS_DIR, "decision_curve.csv")
-#     dca_all.to_csv(dca_fp, index=False)
-#     st.success(f"Saved DCA results: {dca_fp}")
-#     st.dataframe(dca_all.head(20), width="stretch")
+#     st.subheader("Decision Curve Data")
+#     st.dataframe(dca_all.head(20), use_container_width=True)
 # 
-# # -------------------------
-# # Artifacts saved to Drive
-# # -------------------------
-# st.subheader("Artifacts saved to Drive")
-# artifact_list = []
-# for root, _, files in os.walk(ARTIFACTS_DIR):
-#     for f in files:
-#         artifact_list.append(os.path.join(root, f))
-# 
-# st.write(f"Artifacts directory: {ARTIFACTS_DIR}")
-# if artifact_list:
-#     for fp in artifact_list:
-#         name = os.path.basename(fp)
-#         with open(fp, "rb") as fh:
-#             st.download_button(label=f"Download {name}", data=fh, file_name=name)
-# 
-#     # Download all artifacts as ZIP
-#     import zipfile
-#     zip_fp = os.path.join(ARTIFACTS_DIR, "artifacts_bundle.zip")
-#     with zipfile.ZipFile(zip_fp, "w") as zf:
-#         for fp in artifact_list:
-#             zf.write(fp, os.path.basename(fp))
-#     with open(zip_fp, "rb") as fh:
-#         st.download_button(label="Download all artifacts (ZIP)", data=fh, file_name="artifacts_bundle.zip")
+#     # Offer download of combined DCA results
+#     csv_data = dca_all.to_csv(index=False).encode("utf-8")
+#     st.download_button(
+#         label="Download DCA results (CSV)",
+#         data=csv_data,
+#         file_name="decision_curve.csv",
+#         mime="text/csv"
+#     )
 # else:
-#     st.info("No artifacts saved yet in the session.")
+#     st.info("No DCA results available.")
+# 
+# # -------------------------
+# # Artifact handling
+# # -------------------------
+# st.subheader("Artifacts")
+# st.info("Figures and results are displayed directly in the dashboard. Use the download buttons above to export data.")
 
 """# Deployment Guide
 
