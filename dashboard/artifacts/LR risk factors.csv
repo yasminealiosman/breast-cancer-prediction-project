@@ -1,0 +1,22 @@
+﻿,Feature,Coefficient,Impact
+3,area_se,2.673020912324031,↑ risk
+10,radius_worst,1.5054828570376302,↑ risk
+11,texture_worst,1.5002371933017626,↑ risk
+18,concavity_compactness_ratio,1.239816827522158,↑ risk
+13,area_worst,1.2397343313285876,↑ risk
+12,perimeter_worst,1.182689358889001,↑ risk
+7,concave points_se,1.021859437898194,↑ risk
+16,symmetry_worst,1.0148247035771503,↑ risk
+15,concave points_worst,0.601617066129302,↑ risk
+1,concavity_mean,0.5401525265477265,↑ risk
+0,smoothness_mean,0.44382881478567315,↑ risk
+17,fractal_dimension_worst,0.41777187165924806,↑ risk
+14,smoothness_worst,0.19543494954854793,↑ risk
+20,normalized_texture,0.10300507060904752,↑ risk
+4,smoothness_se,0.04678162422178086,↑ risk
+19,symmetry_fractal_ratio,0.02874466601595644,↑ risk
+2,texture_se,-0.16841193527008852,↓ risk
+6,concavity_se,-0.3656358818046527,↓ risk
+5,compactness_se,-0.5380523312608835,↓ risk
+8,symmetry_se,-0.5705089453589153,↓ risk
+9,fractal_dimension_se,-0.8830009273208145,↓ risk
