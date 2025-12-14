@@ -1,4 +1,5 @@
-```
+```markdown
+
 # 🩺 Breast Cancer Prediction Project
 
 ## 📌 Project Overview
@@ -6,7 +7,7 @@
 Breast cancer remains a leading cause of morbidity worldwide. This project applies machine learning techniques to predict breast cancer outcomes using clinical features. Logistic Regression and Gradient Boosting models were trained and evaluated with calibration curves, ROC analysis, and decision curve analysis. Results demonstrate near‑perfect separability between benign and malignant cases, with reliable probability calibration and net clinical benefit. The accompanying Streamlit dashboard provides interactive predictions, dataset upload functionality, and downloadable visualizations, supporting transparency and reproducibility.
 
 ---
-
+```
 ## 📂 Repository Structure
 
 ```
