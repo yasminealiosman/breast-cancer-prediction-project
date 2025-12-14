@@ -1,4 +1,4 @@
-```markdown
+
 
 # 🩺 Breast Cancer Prediction Project
 
@@ -6,8 +6,12 @@
 
 Breast cancer remains a leading cause of morbidity worldwide. This project applies machine learning techniques to predict breast cancer outcomes using clinical features. Logistic Regression and Gradient Boosting models were trained and evaluated with calibration curves, ROC analysis, and decision curve analysis. Results demonstrate near‑perfect separability between benign and malignant cases, with reliable probability calibration and net clinical benefit. The accompanying Streamlit dashboard provides interactive predictions, dataset upload functionality, and downloadable visualizations, supporting transparency and reproducibility.
 
----
-```
+
+
+
+
+
+
 ## 📂 Repository Structure
 
 ```
@@ -49,7 +53,7 @@ breast-cancer-prediction/
 └── requirements.txt          # Dependencies
 ```
 
----
+
 
 ## ⚙️ Installation
 Clone the repository and install dependencies:
@@ -109,7 +113,7 @@ This project is deployed on **Streamlit Cloud** for easy access and sharing.
 - Import new datasets directly into the dashboard for evaluation or prediction  
 - Snapshots of visualizations and tables (ROC curves, confusion matrices, calibration plots, DCA results) available for download  
 
----
+
 
 ## 🏥 Clinical Trust Notes
 - **Accuracy range (99–100%)**: May reflect PCA‑observed separability, stratified train/test splits, and small test size.  
