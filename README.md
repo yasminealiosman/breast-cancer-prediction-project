@@ -1,4 +1,4 @@
-```markdown
+```
 # 🩺 Breast Cancer Prediction Project
 
 ## 📌 Project Overview
@@ -46,7 +46,7 @@ breast-cancer-prediction/
 ├── .gitignore                # Ignore large files and shortcuts
 ├── README.md                 # Project documentation
 └── requirements.txt          # Dependencies
-
+```
 
 ---
 
