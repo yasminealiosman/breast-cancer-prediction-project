@@ -1,3 +1,42 @@
+import joblib
+import pandas as pd
+import os
+
+# -------------------------
+# Directories (relative to project folder)
+# -------------------------
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+MODELS_DIR = os.path.join(BASE_DIR, "..", "models")
+DASHBOARD_DIR = os.path.join(BASE_DIR, "..", "dashboard")
+
+# -------------------------
+# Load test data directly from .pkl
+# -------------------------
+X_test = joblib.load(os.path.join(MODELS_DIR, "X_test.pkl"))
+y_test = joblib.load(os.path.join(MODELS_DIR, "y_test.pkl"))
+
+# -------------------------
+# Define thresholds
+# -------------------------
+threshold_lr = 0.45
+threshold_gb = 0.39
+
+# -------------------------
+# Save thresholds directly
+# -------------------------
+joblib.dump(threshold_lr, os.path.join(MODELS_DIR, "threshold_lr.pkl"))
+joblib.dump(threshold_gb, os.path.join(MODELS_DIR, "threshold_gb.pkl"))
+
+print("✅ Thresholds saved to models/")
+
+# -------------------------
+# Export test data to CSV directly
+# -------------------------
+pd.DataFrame(X_test).to_csv(os.path.join(DASHBOARD_DIR, "X_test.csv"), index=False)
+pd.DataFrame({"label": y_test}).to_csv(os.path.join(DASHBOARD_DIR, "y_test.csv"), index=False)
+
+print("✅ Exported X_test.csv and y_test.csv to dashboard/")
+
 
 
 import joblib
@@ -6,6 +45,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import streamlit as st
+import os
 
 from sklearn.metrics import (
     roc_auc_score, roc_curve, confusion_matrix,
@@ -22,12 +62,11 @@ st.title("Breast Cancer Prediction Dashboard")
 st.caption("This dashboard is for research/decision support, not a substitute for medical diagnosis.")
 
 # -------------------------
-# Paths (raw strings only)
+# Paths (relative to project folder)
 # -------------------------
-MODELS_DIR = r"C:/Users/yasmine/Documents/Portfolio/DataSciencePortfolio/Projects/Breast-Cancer/models"
-DASHBOARD_DIR = r"C:/Users/yasmine/Documents/Portfolio/DataSciencePortfolio/Projects/Breast-Cancer/dashboard"
-
-
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+MODELS_DIR = os.path.join(BASE_DIR, "..", "models")
+DASHBOARD_DIR = os.path.join(BASE_DIR, "..", "dashboard")
 
 # -------------------------
 # Utilities
@@ -89,21 +128,23 @@ def decision_curve(y_true, y_prob, thresholds=np.linspace(0.01, 0.99, 50)):
 # -------------------------
 # Sidebar
 # -------------------------
+import os
+
 st.sidebar.header("Configuration")
 
-# Keep only test data paths
+# Keep only test data paths (relative paths)
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DASHBOARD_DIR = os.path.join(BASE_DIR, "..", "dashboard")
+MODELS_DIR = os.path.join(BASE_DIR, "..", "models")
+
 x_test_path = st.sidebar.text_input(
     "X_test CSV (features)",
-    r"C:/Users/yasmine/Documents/Portfolio/DataSciencePortfolio/Projects/Breast-Cancer/dashboard/X_test.csv"
+    os.path.join(DASHBOARD_DIR, "X_test.csv")
 )
 y_test_path = st.sidebar.text_input(
     "y_test CSV (labels)",
-    r"C:/Users/yasmine/Documents/Portfolio/DataSciencePortfolio/Projects/Breast-Cancer/dashboard/y_test.csv"
+    os.path.join(DASHBOARD_DIR, "y_test.csv")
 )
-
-
-
-
 
 # Model selection
 selected_models = st.sidebar.multiselect(
@@ -148,7 +189,6 @@ except Exception as e:
     st.stop()
 
 
-
 # -------------------------
 # Load models + thresholds
 # -------------------------
@@ -159,12 +199,12 @@ load_msgs = []
 for key in selected_models:
     # Model
     try:
-        model_path = rf"{MODELS_DIR}/model_{key.lower()}.pkl"
+        model_path = os.path.join(MODELS_DIR, f"model_{key.lower()}.pkl")
         model = joblib.load(model_path)
         models[key] = model
         # Threshold
         try:
-            thr_path = rf"{MODELS_DIR}/threshold_{key.lower()}.pkl"
+            thr_path = os.path.join(MODELS_DIR, f"threshold_{key.lower()}.pkl")
             thr = joblib.load(thr_path)
         except Exception:
             thr = threshold_controls.get(key, 0.5)
@@ -220,16 +260,12 @@ def _compute_threshold_metrics(name, model, X, y, thr):
     }
 
 
-
-
-
 # -------------------------
 # Overview
 # -------------------------
 from sklearn.metrics import accuracy_score
 
 st.subheader("Overview")
-
 
 # Test set size
 n_test = len(X_test)
@@ -274,6 +310,7 @@ st.markdown("""
 - **Decision curve analysis (DCA)** shows positive net benefit compared to treating all or none, providing evidence of clinical utility.
 """)
 
+
 # -------------------------
 # Model comparison table + bar plot (live metrics)
 # -------------------------
@@ -307,6 +344,7 @@ if metrics_rows:
     st.pyplot(fig_bar)
 else:
     st.info("No live metrics available. Ensure models are loaded and support predict_proba.")
+
 
 # -------------------------
 # ROC curves overlay (live)
@@ -382,6 +420,8 @@ if models:
 else:
     st.info("No models available to generate confusion matrices.")
 
+
+
 # -------------------------
 # Interpretability (live generation)
 # -------------------------
@@ -448,7 +488,6 @@ else:
     st.info("No threshold metrics available. Ensure models are loaded and support predict_proba.")
 
 
-
 st.subheader("Feature importance and risk factors")
 
 for name, model in models.items():
@@ -500,15 +539,15 @@ for name, model in models.items():
         st.warning(f"Skipping interpretability for {name}: {e}")
 
 
+# -------------------------
+# Interpretability notes
+# -------------------------
 st.markdown("""
 **Interpretability notes:**
 - Logistic Regression (LR) coefficients act as risk factors: positive values increase malignancy risk, negative values decrease it.
 - Gradient Boosting (GB) provides relative feature importance scores; calibration curves assess probability reliability.
 - Threshold tuning metrics (Precision, Recall, Specificity, PPV, NPV, Brier) are generated live from the test set at your selected thresholds.
 """)
-
-
-
 
 # -------------------------
 # Interactive prediction
@@ -616,7 +655,7 @@ if models and X_test is not None and y_test is not None:
     ax.legend(loc="best")
     st.pyplot(fig_dca)
 else:
-    st.info("Decision Curve Analysis unavailable. Ensure test data and models are loaded.")    
+    st.info("Decision Curve Analysis unavailable. Ensure test data and models are loaded.")
 
 # -------------------------
 # Export DCA results
@@ -635,8 +674,7 @@ if dca_frames:
 else:
     st.info("No DCA results available.")
 
-
- # -------------------------
+# -------------------------
 # Upload Your Own Dataset
 # -------------------------
 st.markdown("""
@@ -648,7 +686,7 @@ You can upload a CSV file with the same feature structure used during training.
 """)
 
 try:
-    expected_features = joblib.load(f"{file_path}/feature_names.pkl")
+    expected_features = joblib.load(os.path.join(MODELS_DIR, "feature_names.pkl"))
 except Exception:
     expected_features = list(X_test.columns)
 
@@ -684,11 +722,12 @@ Below is the structure of the preprocessed dataset used for training and evaluat
 """)
 
 try:
-    pre_df = pd.read_csv(r"C:\Users\yasmine\Documents\Portfolio\DataSciencePortfolio\Projects\Breast-Cancer\data\preprocessed\breast_cancer_pruned.csv")
+    DATA_DIR = os.path.join(BASE_DIR, "..", "data", "preprocessed")
+    pre_df = pd.read_csv(os.path.join(DATA_DIR, "breast_cancer_pruned.csv"))
     st.write("Preprocessed dataset shape:", pre_df.shape)
     st.dataframe(pre_df.head(10))  # show first 10 rows
 except Exception as e:
-    st.error(f"Could not load preprocessed dataset: {e}")   
+    st.error(f"Could not load preprocessed dataset: {e}")
 
 # -------------------------
 # Artifacts
