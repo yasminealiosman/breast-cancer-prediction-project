@@ -9,7 +9,17 @@ Breast cancer remains a leading cause of morbidity worldwide. This project appli
 
 
 
+## 📂 Dataset Source
 
+This project uses the **Breast Cancer Wisconsin (Diagnostic) dataset**, originally from the  
+[UCI Machine Learning Repository](https://archive.ics.uci.edu/dataset/17/breast+cancer+wisconsin+diagnostic),  
+and accessed via **Kaggle**.
+
+- Features: 30 numeric features computed from digitized images of fine needle aspirates (FNAs).  
+- Target: Diagnosis (Malignant vs. Benign).  
+- Instances: 569 samples.  
+
+The dataset is widely used for benchmarking classification algorithms in healthcare-related machine learning tasks.
 
 
 ## 📂 Repository Structure
@@ -53,6 +63,74 @@ breast-cancer-prediction/
 └── requirements.txt          # Dependencies
 ```
 
+
+## 🧹 Data Preprocessing
+
+The dataset was prepared with the following steps to ensure reproducibility and interpretability:
+
+- **Data Cleaning**  
+  Checked for duplicates and missing values (none present).
+
+- **Feature Scaling**  
+  Standardized numeric features for comparability.
+
+- **Feature Engineering**  
+  - Ratios (e.g., `perimeter_radius_ratio`) to highlight proportional relationships  
+  - Squared terms for non-linear effects  
+  - Normalized features to emphasize relative variation  
+  - Interaction terms to capture clinically meaningful feature interactions  
+
+- **Pruning**  
+  Applied **Variance Inflation Factor (VIF)** analysis to reduce collinearity, retaining engineered features that preserve predictive signal.
+
+- **Train/Test Split**  
+  Divided into training and testing sets (e.g., 80/20 split).
+
+
+
+
+## ⚙️ Modeling Approach
+
+To balance interpretability and predictive performance, we applied the following modeling strategies:
+
+- **Algorithms**
+  - Logistic Regression: chosen for transparency and clinical interpretability
+  - Gradient Boosting: used to capture complex, non-linear relationships
+
+- **Workflow**
+  - Models trained on the engineered and pruned feature set
+  - Hyperparameter tuning performed with cross-validation
+  - Evaluation conducted on a held-out test set
+
+- **Interpretability**
+  - Logistic Regression coefficients examined for clinical meaning
+  - Gradient Boosting feature importance analyzed to highlight key predictors
+
+
+## 📈 Evaluation Metrics
+
+Model performance was assessed using multiple metrics to balance accuracy with clinical interpretability:
+
+- **ROC Curves**  
+  Compared models on sensitivity vs. specificity trade-offs.
+
+- **AUC (Area Under Curve)**  
+  Quantified overall discriminative ability.
+
+- **Calibration Plots**  
+  Checked how well predicted probabilities aligned with actual outcomes.
+
+- **Confusion Matrix**  
+  Summarized correct vs. incorrect classifications for malignant and benign cases.
+
+- **Decision Curve Analysis**  
+  Evaluated clinical usefulness by considering net benefit across threshold probabilities.
+
+---
+
+**Interpretability Focus:**  
+- Logistic Regression coefficients were examined for clinical meaning.  
+- Gradient Boosting feature importance highlighted key predictors influencing malignancy risk.
 
 
 ## ⚙️ Installation
