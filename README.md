@@ -1,41 +1,52 @@
+```markdown
 # 🩺 Breast Cancer Prediction Project
 
 ## 📌 Project Overview
-This project applies machine learning techniques to predict breast cancer outcomes using clinical features. It combines **exploratory data analysis (EDA)**, **feature engineering**, **model training**, **threshold tuning**, and an **interactive Streamlit dashboard** for deployment.  
 
-The goal is not only high accuracy but also **clinical interpretability and trust**.
-This is achieved through calibration curves, decision curve analysis, and transparent feature importance plots.
+Breast cancer remains a leading cause of morbidity worldwide. This project applies machine learning techniques to predict breast cancer outcomes using clinical features. Logistic Regression and Gradient Boosting models were trained and evaluated with calibration curves, ROC analysis, and decision curve analysis. Results demonstrate near‑perfect separability between benign and malignant cases, with reliable probability calibration and net clinical benefit. The accompanying Streamlit dashboard provides interactive predictions, dataset upload functionality, and downloadable visualizations, supporting transparency and reproducibility.
 
-
+---
 
 ## 📂 Repository Structure
+
 ```
 breast-cancer-prediction/
 │
-├── notebooks/                # Jupyter notebooks for EDA, modeling, experiments
-│   ├── breast_cancer_01_eda.ipynb
-│   ├── breast_cancer_02_modeling.ipynb
-│   └── breast_cancer_06_dashboard.py
+├── dashboard/                # Streamlit dashboard and artifacts
+│   ├── artifacts/            # Snapshots of visualizations and tables
+│   │   ├── ROC_curve.png
+│   │   ├── calibration_curve.png
+│   │   └── confusion_matrix.png
+│   ├── breast_cancer_dashboard.py
+│   ├── breast_cancer_06_dashboard.py
+│   ├── X_test.csv
+│   └── y_test.csv
 │
-├── models/                   # Serialized models and thresholds
+├── data/                     # Raw and preprocessed datasets
+│   ├── raw/
+│   │   └── breast_cancer_dataset.csv
+│   └── preprocessed/
+│       └── breast_cancer_pruned.csv
+│
+├── models/                   # Serialized models, thresholds, and test sets
 │   ├── lr_pipeline.pkl
 │   ├── gb_pipeline.pkl
 │   ├── threshold_lr.pkl
-│   └── threshold_gb.pkl
+│   ├── threshold_gb.pkl
+│   └── test_set.pkl
 │
-├── data/                     # Raw and processed datasets
-│   ├── breast_cancer.csv
-│   └── preprocessed.csv
+├── notebooks/                # Jupyter notebooks for workflow stages
+│   ├── breast-cancer-01_download-dataset.ipynb
+│   ├── breast-cancer-02-exploratory-data-analysis.ipynb
+│   ├── breast-cancer-03-preprocessing.ipynb
+│   ├── breast-cancer-04-modeling.ipynb
+│   ├── breast-cancer-05-reporting.ipynb
+│   └── breast-cancer_06_dashboard.ipynb
 │
-├── dashboard/                # Artifacts for Streamlit (CSV, plots)
-│   ├── X_test.csv
-│   ├── y_test.csv
-│   └── ROC_curve.png
-│
-├── requirements.txt          # Dependencies
+├── .gitignore                # Ignore large files and shortcuts
 ├── README.md                 # Project documentation
-└── .gitignore                # Ignore large files and shortcuts
-```
+└── requirements.txt          # Dependencies
+
 
 ---
 
@@ -43,21 +54,26 @@ breast-cancer-prediction/
 Clone the repository and install dependencies:
 
 ```bash
-git clone https://github.com/yasminealiosman/breast-cancer-prediction.git
-cd breast-cancer-prediction
+git clone https://github.com/yasminealiosman/breast-cancer-prediction-project.git
+cd breast-cancer-prediction-project
 pip install -r requirements.txt
 ```
 
 ---
 
-## 🚀 Usage
+##  Usage
 
 ### 1. Run Notebooks
-- `notebooks/breast_cancer_01_eda.ipynb` → Exploratory analysis (PCA, separability, class balance checks)  
-- `notebooks/breast_cancer_02_modeling.ipynb` → Model training, threshold tuning, evaluation  
+- `notebooks/breast-cancer-01_download-dataset.ipynb`   
+- `notebooks/breast-cancer-02-exploratory-data-analysis.ipynb`  → Exploratory analysis (PCA, separability, class balance checks)   
+- `notebooks/breast-cancer-03-preprocessing.ipynb` 
+- `notebooks/breast-cancer-04-modeling.ipynb` → Model training, threshold tuning, evaluation
+- `notebooks/breast-cancer-05-reporting.ipynb` 
+- `notebooks/breast-cancer_06_dashboard.ipynb` 
 
-### 2. Launch Dashboard
-Run the Streamlit app locally:
+
+### 2. Launch Dashboard Locally
+Run the Streamlit app:
 ```bash
 streamlit run notebooks/breast_cancer_06_dashboard.py
 ```
@@ -69,13 +85,28 @@ The dashboard supports:
 
 ---
 
+## 🌐 Deployment
+
+This project is deployed on **Streamlit Cloud** for easy access and sharing.  
+
+🔗 **Live Dashboard Preview:** [Breast Cancer Prediction Dashboard](https://breast-cancer-prediction-project-xlaymqx3l7jvnhhhsvjbh8.streamlit.app)
+
+### Steps to Deploy Yourself:
+1. Push the repo to GitHub.  
+2. Go to [Streamlit Cloud](https://streamlit.io/cloud) and connect your GitHub repository.  
+3. Select `notebooks/breast_cancer_dashboard.py` as the entry point.  
+4. Streamlit Cloud will automatically install dependencies from `requirements.txt` and launch the app.  
+
+---
+ 
 ## 📊 Features
 - Logistic Regression and Gradient Boosting models  
 - Tuned thresholds for optimal F1 and clinical balance  
 - Calibration curves for probability reliability  
 - Decision curve analysis for net benefit evaluation  
-- SHAP explanations and feature importance plots for interpretability  
-- Exportable artifacts for reproducibility  
+- Feature importance plots for interpretability (LR coefficients as risk factors, GB relative importance)  
+- Import new datasets directly into the dashboard for evaluation or prediction  
+- Snapshots of visualizations and tables (ROC curves, confusion matrices, calibration plots, DCA results) available for download  
 
 ---
 
@@ -88,26 +119,17 @@ The dashboard supports:
 
 ---
 
-## 📦 Deployment
-This project can be deployed on **Streamlit Cloud**:
-1. Push repo to GitHub  
-2. Connect Streamlit Cloud to the repo  
-3. Select `notebooks/breast_cancer_06_dashboard.py` as the entry point  
-
----
-
-## 🔬 Next Steps
-- **External validation**: Test models on independent datasets to confirm generalizability.  
-- **Deployment**: Host dashboard online for collaborators and clinicians.  
-- **Reporting**: Publish clinical summary and technical appendix for transparency.  
-- **Extensions**: Add subgroup analysis, bias testing, and SHAP visualizations.  
-
----
-
 ## 👩🏽‍💻 Author
 **Yasmine Ali-Osman**  
 - GitHub: [@yasminealiosman](https://github.com/yasminealiosman)  
 - LinkedIn: [Yasmine Ali-Osman](https://linkedin.com/in/yasmine-ali-osman-043241206)  
+
+---
+
+## 📜 License
+This project is licensed under the MIT License – see the [LICENSE](LICENSE) file for details.
+```
+
 
 
 

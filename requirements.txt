@@ -1,17 +1,15 @@
 # Core
-numpy>=1.24.0
-pandas>=2.0.0
+numpy==2.3.5
+pandas==2.3.3
 scikit-learn==1.7.2
-scipy>=1.11.0
-joblib>=1.3.0
+joblib==1.5.2
 imbalanced-learn
 
 
 # Visualization
-matplotlib>=3.7.0
-seaborn>=0.12.0
-shap>=0.42.0
-plotly>=5.15.0   # optional, for interactive plots
+matplotlib
+seaborn
+plotly
 
 # Dashboard
-streamlit>=1.28.0
+streamlit==1.52.1
