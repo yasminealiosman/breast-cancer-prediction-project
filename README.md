@@ -151,7 +151,7 @@ pip install -r requirements.txt
 - `notebooks/breast-cancer-02-exploratory-data-analysis.ipynb`  → Exploratory analysis (PCA, separability, class balance checks)   
 - `notebooks/breast-cancer-03-preprocessing.ipynb` 
 - `notebooks/breast-cancer-04-modeling.ipynb` → Model training, threshold tuning, evaluation
-- `notebooks/breast-cancer-05-reporting.ipynb` 
+- `notebooks/breast-cancer-05-reporting.ipynb` (evaluation)
 - `notebooks/breast-cancer_06_dashboard.ipynb` 
 
 
