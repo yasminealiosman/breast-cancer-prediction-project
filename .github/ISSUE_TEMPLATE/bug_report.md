@@ -14,13 +14,13 @@ assignees: ''
 
 
 
-\## 🐛 Describe the bug
+## 🐛 Describe the bug
 
 A clear and concise description of what the bug is.
 
 
 
-\## 🔄 Steps to Reproduce
+## 🔄 Steps to Reproduce
 
 1\. Go to '...'
 
@@ -30,19 +30,19 @@ A clear and concise description of what the bug is.
 
 
 
-\## ✅ Expected behavior
+## ✅ Expected behavior
 
 What you expected to happen.
 
 
 
-\## 📸 Screenshots
+## 📸 Screenshots
 
 If applicable, add screenshots to help explain.
 
 
 
-\## 💻 Environment
+## 💻 Environment
 
 \- OS: \[e.g. Windows 11]
 

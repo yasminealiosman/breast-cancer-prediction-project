@@ -14,25 +14,25 @@ assignees: ''
 
 
 
-\## ✨ Describe the feature
+## ✨ Describe the feature
 
 A clear and concise description of what you want to happen.
 
 
 
-\## 📚 Motivation
+## 📚 Motivation
 
 Why is this feature important? What problem does it solve?
 
 
 
-\## 🛠 Suggested solution
+## 🛠 Suggested solution
 
 Describe how you’d like it implemented (optional).
 
 
 
-\## 📎 Additional context
+## 📎 Additional context
 
 Add any other context, screenshots, or references.
 
