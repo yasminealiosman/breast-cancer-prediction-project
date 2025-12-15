@@ -8,7 +8,8 @@ We welcome improvements in documentation, features, testing, and interpretabilit
 
 
 
----
+
+
 
 
 
@@ -32,7 +33,7 @@ This helps us respond faster and keeps the project organized.
 
 
 
----
+
 
 
 
@@ -50,7 +51,7 @@ This helps us respond faster and keeps the project organized.
 
 
 
----
+
 
 
 
@@ -66,7 +67,8 @@ This helps us respond faster and keeps the project organized.
 
 
 
----
+
+
 
 
 
@@ -80,11 +82,12 @@ This helps us respond faster and keeps the project organized.
 
 
 
----
+
+
 
 
 
 ## 📜 License
 
-By contributing, you agree that your contributions will be licensed under the MIT License.
+By contributing, you agree that your contributions will be licensed under the CC-BY-NC 4.0 License.
 
