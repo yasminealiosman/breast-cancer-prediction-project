@@ -4,7 +4,7 @@ name: Feature request
 
 about: Suggest an idea for this project
 
-title: "\[FEATURE] Short description"
+title: "[FEATURE] Short description"
 
 labels: enhancement
 
