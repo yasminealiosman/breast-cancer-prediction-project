@@ -2,6 +2,11 @@
 
 # 🩺 Breast Cancer Prediction Project
 
+
+[![License: CC BY-NC 4.0](https://img.shields.io/badge/License-CC%20BY--NC%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc/4.0/)
+
+
+
 ## 📌 Project Overview
 
 Breast cancer remains a leading cause of morbidity worldwide. This project applies machine learning techniques to predict breast cancer outcomes using clinical features. Logistic Regression and Gradient Boosting models were trained and evaluated with calibration curves, ROC analysis, and decision curve analysis. Results demonstrate near‑perfect separability between benign and malignant cases, with reliable probability calibration and net clinical benefit. The accompanying Streamlit dashboard provides interactive predictions, dataset upload functionality, and downloadable visualizations, supporting transparency and reproducibility.
@@ -20,6 +25,7 @@ and accessed via **Kaggle**.
 - Instances: 569 samples.  
 
 The dataset is widely used for benchmarking classification algorithms in healthcare-related machine learning tasks.
+
 
 
 ## 📂 Repository Structure
@@ -62,6 +68,7 @@ breast-cancer-prediction/
 ├── README.md                 # Project documentation
 └── requirements.txt          # Dependencies
 ```
+
 
 
 ## 🧹 Data Preprocessing
@@ -107,6 +114,8 @@ To balance interpretability and predictive performance, we applied the following
   - Gradient Boosting feature importance analyzed to highlight key predictors
 
 
+
+
 ## 📈 Evaluation Metrics
 
 Model performance was assessed using multiple metrics to balance accuracy with clinical interpretability:
@@ -126,7 +135,9 @@ Model performance was assessed using multiple metrics to balance accuracy with c
 - **Decision Curve Analysis**  
   Evaluated clinical usefulness by considering net benefit across threshold probabilities.
 
----
+
+
+
 
 **Interpretability Focus:**  
 - Logistic Regression coefficients were examined for clinical meaning.  
@@ -142,7 +153,9 @@ cd breast-cancer-prediction-project
 pip install -r requirements.txt
 ```
 
----
+
+
+
 
 ##  Usage
 
@@ -166,7 +179,9 @@ The dashboard supports:
 - **Interactive prediction**: Enter single patient features  
 - **Artifacts management**: Download ROC curves, confusion matrices, calibration plots, and tuned thresholds  
 
----
+
+
+
 
 ## 🌐 Deployment
 
@@ -180,7 +195,8 @@ This project is deployed on **Streamlit Cloud** for easy access and sharing.
 3. Select `notebooks/breast_cancer_dashboard.py` as the entry point.  
 4. Streamlit Cloud will automatically install dependencies from `requirements.txt` and launch the app.  
 
----
+
+
  
 ## 📊 Features
 - Logistic Regression and Gradient Boosting models  
@@ -200,21 +216,35 @@ This project is deployed on **Streamlit Cloud** for easy access and sharing.
 - **Decision curve analysis (DCA)**: Confirms clinical utility by showing net benefit compared to “Treat All” or “Treat None.”  
 - **Interpretability**: LR coefficients act as risk factors; GB highlights feature importance consistent with pathology markers.  
 
----
+
+
 
 ## 👩🏽‍💻 Author
 **Yasmine Ali-Osman**  
 - GitHub: [@yasminealiosman](https://github.com/yasminealiosman)  
 - LinkedIn: [Yasmine Ali-Osman](https://linkedin.com/in/yasmine-ali-osman-043241206)  
 
----
-
-## 📜 License
-This project is licensed under the MIT License – see the [LICENSE](LICENSE) file for details.
-```
 
 
 
+## 📎 License
+This project is licensed under the Creative Commons Attribution–NonCommercial 4.0 International License (CC BY-NC 4.0).
+
+You are free to use, share, and adapt this work with attribution, but **commercial use is not permitted**.
+
+
+
+## 📎 Attribution
+This project is licensed under the Creative Commons Attribution–NonCommercial 4.0 International License (CC BY-NC 4.0).
+
+If you use or adapt this work, please provide proper credit by including:
+
+- Author: **Yasmine Ali Osman**
+- Link to the original repository: [GitHub Repo](https://github.com/yasminealiosman/breast-cancer-prediction-project)
+- License notice: *"Licensed under CC BY-NC 4.0 — commercial use is not permitted."*
+
+Example citation:
+> Breast Cancer Prediction Dashboard — Yasmine Ali Osman (CC BY-NC 4.0)
 
 
 
