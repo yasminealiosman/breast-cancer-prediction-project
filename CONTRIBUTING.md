@@ -1,4 +1,4 @@
-\# Contributing to Breast Cancer Prediction Dashboard
+# Contributing to Breast Cancer Prediction Dashboard
 
 
 
@@ -12,7 +12,7 @@ We welcome improvements in documentation, features, testing, and interpretabilit
 
 
 
-\## 🐛 Issues
+## 🐛 Issues
 
 We use GitHub Issues to track bugs, feature requests, and documentation improvements.
 
@@ -36,7 +36,7 @@ This helps us respond faster and keeps the project organized.
 
 
 
-\## 🔄 How to Contribute
+## 🔄 How to Contribute
 
 1\. Fork the repository
 
@@ -54,7 +54,7 @@ This helps us respond faster and keeps the project organized.
 
 
 
-\## 🛠 Coding Guidelines
+## 🛠 Coding Guidelines
 
 \- Use Python 3.9+
 
@@ -70,7 +70,7 @@ This helps us respond faster and keeps the project organized.
 
 
 
-\## ✅ Testing
+## ✅ Testing
 
 \- Run `pytest` before submitting a PR
 
@@ -84,7 +84,7 @@ This helps us respond faster and keeps the project organized.
 
 
 
-\## 📜 License
+## 📜 License
 
 By contributing, you agree that your contributions will be licensed under the MIT License.
 
