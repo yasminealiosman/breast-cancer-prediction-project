@@ -164,14 +164,13 @@ pip install -r requirements.txt
 - `notebooks/breast-cancer-02-exploratory-data-analysis.ipynb`  → Exploratory analysis (PCA, separability, class balance checks)   
 - `notebooks/breast-cancer-03-preprocessing.ipynb` 
 - `notebooks/breast-cancer-04-modeling.ipynb` → Model training, threshold tuning, evaluation
-- `notebooks/breast-cancer-05-reporting.ipynb` (evaluation)
-- `notebooks/breast-cancer_06_dashboard.ipynb` 
+- `notebooks/breast-cancer-05-reporting.ipynb` (evaluation) 
 
 
 ### 2. Launch Dashboard Locally
 Run the Streamlit app:
 ```bash
-streamlit run notebooks/breast_cancer_06_dashboard.py
+streamlit run dashboard/breast_cancer_06_dashboard.py
 ```
 
 The dashboard supports:
@@ -192,7 +191,7 @@ This project is deployed on **Streamlit Cloud** for easy access and sharing.
 ### Steps to Deploy Yourself:
 1. Push the repo to GitHub.  
 2. Go to [Streamlit Cloud](https://streamlit.io/cloud) and connect your GitHub repository.  
-3. Select `notebooks/breast_cancer_dashboard.py` as the entry point.  
+3. Select `dashboard/breast_cancer_dashboard.py` as the entry point.  
 4. Streamlit Cloud will automatically install dependencies from `requirements.txt` and launch the app.  
 
 
